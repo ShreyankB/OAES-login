@@ -1,15 +1,12 @@
 import java.sql.*;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 public class OAES {
-
-    public final String dbURL = "jdbc:mysql://localhost:3306/OAES";
-    public final String dbUname = "root";
-    public final String dbPass = "password";
 
     public static void main(String[] args) throws  Exception {
         int option = 0;
         Scanner sc = new Scanner(System.in);
-        OAES oaes = new OAES();
 
         while(option != 4) {
             System.out.println("-------------------------------------------------------------");
@@ -53,8 +50,8 @@ class Register {
     Scanner sc = new Scanner(System.in);
 
     Register() {
-        emailRegex = "^(.+)@(\\S+)$";
-        mobileRegex = "";
+        emailRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+        mobileRegex = "[0-9]{10}";
         aadharRegex = "";
         IDProofRegex = "";
     }
@@ -89,10 +86,14 @@ class Register {
         return verifyID(IDProof);
     }
     private boolean verifyEmail(String emailID) {
-        return true;
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(emailID);
+        return matcher.matches();
     }
     private boolean verifyMobile(String mobileNumber) {
-        return true;
+        Pattern pattern = Pattern.compile(mobileRegex);
+        Matcher matcher = pattern.matcher(mobileNumber);
+        return matcher.matches();
     }
     private boolean verifyAadhar(String aadharCard) {
         return true;
@@ -143,6 +144,8 @@ class LogIn {
     Scanner sc = new Scanner(System.in);
     LogIn() {
         emailLogin = true;
+        emailRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+        mobileRegex = "[0-9]{10}";
     }
     private boolean getEmailID() {
         System.out.print("EmailID:\t");
@@ -163,12 +166,15 @@ class LogIn {
         otp = sc.next();
     }
     private boolean verifyEmail(String emailID) {
-        return true;
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(emailID);
+        return matcher.matches();
     }
     private boolean verifyMobile(String mobileNumber) {
-        return true;
-    }
-    private boolean verifyPassword() throws Exception {
+        Pattern pattern = Pattern.compile(mobileRegex);
+        Matcher matcher = pattern.matcher(mobileNumber);
+        return matcher.matches();
+    }    private boolean verifyPassword() throws Exception {
         String query = "SELECT password from studentInfo where email=?";
         Class.forName("com.mysql.cj.jdbc.Driver");
         Scanner sc = new Scanner(System.in);
@@ -272,6 +278,8 @@ class ForgotPassword {
     Scanner sc = new Scanner(System.in);
     ForgotPassword() {
         emailLogin = true;
+        emailRegex = "^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$";
+        mobileRegex = "[0-9]{10}";
     }
     private boolean getEmailID() {
         System.out.print("EmailID:\t");
@@ -292,12 +300,15 @@ class ForgotPassword {
         otp = sc.next();
     }
     private boolean verifyEmail(String emailID) {
-        return true;
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(emailID);
+        return matcher.matches();
     }
     private boolean verifyMobile(String mobileNumber) {
-        return true;
+        Pattern pattern = Pattern.compile(mobileRegex);
+        Matcher matcher = pattern.matcher(mobileNumber);
+        return matcher.matches();
     }
-
     private boolean verifyOTP() {
         return true;
     }
