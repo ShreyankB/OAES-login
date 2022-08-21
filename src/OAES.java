@@ -15,7 +15,7 @@ public class OAES {
             System.out.println("-------------------------------------------------------------");
             System.out.println("Welcome to OAES");
             System.out.println("-------------------------------------------------------------");
-            System.out.print("1. Register \n2. Login \n3. Forgot password \n4.exit \nchoice: ");
+            System.out.print("1. Register \n2. Login \n3. Forgot password \n4. exit \nchoice: ");
             option = sc.nextInt();
 
             switch (option) {
@@ -25,7 +25,8 @@ public class OAES {
                 case 2: LogIn login = new LogIn();
                         login.login();
                         break;
-                case 3:
+                case 3: ForgotPassword fp = new ForgotPassword();
+                        fp.updatePassword();
                         break;
                 case 4: break;
                 default: System.out.println("Enter a valid choice..!!\n");
@@ -253,6 +254,97 @@ class LogIn {
                 System.out.print("*****\t Logged In, Successfully..!!\n\n");
             else
                 System.out.print("*****\t Redirecting to main menu\n");
+        }
+    }
+}
+
+class ForgotPassword {
+    private String emailID;
+    private String password;
+    private String mobileNumber;
+    private String otp;
+    boolean emailLogin;
+    private String emailRegex;
+    private String mobileRegex;
+    public final String dbURL = "jdbc:mysql://localhost:3306/OAES";
+    public final String dbUname = "root";
+    public final String dbPass = "password";
+    Scanner sc = new Scanner(System.in);
+    ForgotPassword() {
+        emailLogin = true;
+    }
+    private boolean getEmailID() {
+        System.out.print("EmailID:\t");
+        emailID = sc.next();
+        return verifyEmail(emailID);
+    }
+    private boolean getMobileNumber() {
+        System.out.print("Mobile No.:\t");
+        mobileNumber = sc.next();
+        return verifyMobile(mobileNumber);
+    }
+    private void getPassword() {
+        System.out.print("New Password:\t");
+        password = sc.next();
+    }
+    private void getOTP() {
+        System.out.print("OTP:\t");
+        otp = sc.next();
+    }
+    private boolean verifyEmail(String emailID) {
+        return true;
+    }
+    private boolean verifyMobile(String mobileNumber) {
+        return true;
+    }
+
+    private boolean verifyOTP() {
+        return true;
+    }
+    public void updatePassword() throws Exception {
+        System.out.print("Update Password Options:\n");
+        System.out.print("1. Mobile No. + OTP\n2. Email + Reset\nchoice:");
+        int choice = sc.nextInt();
+
+        if(choice == 1)
+            emailLogin = false;
+
+        if(emailLogin) {
+            while(!getEmailID()) System.out.println("Invalid Email ID.\nPlease, Re enter it.");
+            System.out.print("**** password reset link has been sent to your email ID.\n\n");
+        }
+        else {
+            while(!getMobileNumber()) System.out.println("\"Invalid Mobile no.\nPlease, Re enter it.");
+            getOTP();
+            boolean valid = true;
+
+            while(!verifyOTP()) {
+                System.out.print("*****\t Invalid OTP..!!\n");
+                System.out.print("1. Re enter OTP\n2. Main Menu\nchoice:\t");
+                choice = sc.nextInt();
+
+                if(choice == 2) {
+                    valid = false;
+                    break;
+                }
+                else {
+                    getOTP();
+                }
+            }
+
+            if(valid) {
+                getPassword();
+                String query = "UPDATE studentInfo SET password=? WHERE mobile=?";
+                Class.forName("com.mysql.cj.jdbc.Driver");
+                Connection connection = DriverManager.getConnection(this.dbURL, this.dbUname, this.dbPass);
+
+                PreparedStatement stmt = connection.prepareStatement(query);
+                stmt.setString(1, this.password);
+                stmt.setString(2, this.mobileNumber);
+
+                stmt.executeUpdate();
+                System.out.println("Password updated successfully");
+            }
         }
     }
 }
